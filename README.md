@@ -1,5 +1,7 @@
 # iOS-Build-Scripts
 
+**已更新对XCode 8的兼容**
+
 这是一个用于iOS App自动打包并上传的脚本，其中包括用于生成ipa与archive文件的脚本以及自动上传到蒲公英等分发平台的脚本。
 
 根目录下的`build.sh`就是打包用的脚本文件。
