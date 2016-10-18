@@ -23,6 +23,11 @@ app_name="APP_NAME"                         #应用名字
 scheme="SCHEME_NAME"                        #工程文件中应用的scheme名字（一般和target名字相同）
 workspace="XXXX.xcworkspace"                #工程文件的名字
 
+production_bundle_id="..."			# 正式版APP的bundle id，可以将测试版和正式版的bundle id设置为不同的值来同时在一台设备上安装两个版本
+development_bundle_id="..."			# 测试版APP的bundle id，可以设置为与正式版相同
+
+team_id="..."		# 开发者账号的TEAM ID
+
 ############################
 
 
@@ -33,12 +38,14 @@ if [ $mode = "adhoc" ] ;  then
 echo "内测发布模式"
 macro_setting="$adhoc_macro_setting"
 profile="$adhoc_profile"
+bundle_id="$production_bundle_id"
 
 elif [ $mode = "development" ] ; then
 # 开发模式
 echo "开发模式"
 macro_setting="$development_macro_setting"
 profile="$develoment_profile"
+bundle_id="$development_bundle_id"
 
 elif [ $mode = "appstore" ] ; then
 #APP STORE模式
@@ -50,6 +57,7 @@ elif [ $mode = "appstore" ] ; then
 
 macro_setting="$appstore_macro_setting"
 profile="$appstore_profile"
+bundle_id="$production_bundle_id"
 
 else
 echo "模式无法识别！"
@@ -68,8 +76,8 @@ mkdir $export_path
 archive_path=$export_path/"$app_name".xcarchive
 app_path=$export_path/"$app_name".ipa
 
-xcodebuild -scheme "$scheme" archive -archivePath $archive_path -workspace "$workspace" GCC_PREPROCESSOR_DEFINITIONS="${macro_setting}"
-xcodebuild -exportArchive -exportFormat ipa -archivePath $archive_path -exportPath $app_path -exportProvisioningProfile "$profile"
+xcodebuild archive -workspace "$workspace" -scheme "$scheme" -archivePath $archive_path GCC_PREPROCESSOR_DEFINITIONS="${macro_setting}" PRODUCT_BUNDLE_IDENTIFIER="$bundle_id" PROVISIONING_PROFILE_SPECIFIER="$profile" DEVELOPMENT_TEAM="$team_id"
+xcodebuild -exportArchive -exportFormat ipa -archivePath $archive_path -exportPath $app_path
 
 #############################
 #
